@@ -4,34 +4,36 @@ import kotlin.properties.Delegates
  * A Puzzle is a list of [Hint]s for the columns and rows.
  * @property colHints list of hints for columns from left to right
  * @property rowHints list of hints for rows from top to bottom
+ * @property board the [Board] for this Puzzle
  * @property numCols the number of columns
  * @property numRows the number of rows
- * @property board the [Board] for this Puzzle
  * @property lines the [Line]s derived from the [Hint]s and [Board]
  */
-class Puzzle(val colHints: List<Hint>, val rowHints: List<Hint>) {
+class Puzzle(
+    val colHints: List<Hint>,
+    val rowHints: List<Hint>,
+    val board: Board = Board(colHints.size, rowHints.size),
+) {
     val numCols = colHints.size
     val numRows = rowHints.size
 
-    val board = Board(numCols, numRows)
-
     val lines by lazy {
         val mLines = mutableListOf<Line>()
-        for ((index, hint) in colHints.withIndex()) {
+        for ((col, hint) in colHints.withIndex()) {
             val squares = mutableListOf<Square>()
             for (row in 0 until numRows) {
-                board[index, row]?.let { squares.add(it) }
+                board[col, row]?.let { squares.add(it) }
             }
             mLines.add(Line(hint, squares.toList()))
         }
-        for ((index, hint) in rowHints.withIndex()) {
+        for ((row, hint) in rowHints.withIndex()) {
             val squares = mutableListOf<Square>()
             for (col in 0 until numCols) {
-                board[col, index]?.let { squares.add(it) }
+                board[col, row]?.let { squares.add(it) }
             }
             mLines.add(Line(hint, squares.toList()))
         }
-        mLines.toList()
+        mLines.sortedByDescending { it.hint }
     }
 
     /** Checks if the current [Board] solves the puzzle */
@@ -127,14 +129,14 @@ data class Block(val startIndex: Int, val size: Int)
  * @property values the list of block sizes
  * @property size minimum size of the blocks and spaces
  */
-class Hint(val values: List<Int>) {
+class Hint(val values: List<Int>) : Comparable<Hint> {
     val size = values.size - 1 + values.sum()
 
     /**
      * The [Hint]'s size is used for comparison.
      * @return a negative number if this [Hint]'s size is less than the other
      */
-    operator fun compareTo(other: Hint): Int {
+    override operator fun compareTo(other: Hint): Int {
         return this.size - other.size
     }
 
