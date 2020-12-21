@@ -65,6 +65,20 @@ class ModelTest {
             assertTrue(board1.contains(State.FILLED))
             assertTrue(board1.contains(State.EMPTY))
         }
+
+        @Test
+        fun `apply state`() {
+            val board = Board(3, 3)
+            val boardState = mapOf(Pair(Pair(1, 2), State.FILLED))
+            board.applyState(boardState)
+            for ((location, square) in board.map) {
+                if (location == Pair(1, 2)) {
+                    assertEquals(State.FILLED, square.state)
+                } else {
+                    assertEquals(State.UNKNOWN, square.state)
+                }
+            }
+        }
     }
 
     @Nested

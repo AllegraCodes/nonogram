@@ -154,7 +154,7 @@ class Hint(val values: List<Int>) : Comparable<Hint> {
  * @constructor creates a blank ([State].UNKNOWN) board of the given size
  */
 class Board(val numCols: Int, val numRows: Int) {
-    private val map by lazy {
+    val map by lazy {
         val mMap = mutableMapOf<Pair<Int, Int>, Square>()
         for (c in 0 until numCols) {
             for (r in 0 until numRows) {
@@ -208,7 +208,15 @@ class Board(val numCols: Int, val numRows: Int) {
         }
         return true
     }
+
+    fun applyState(boardState: BoardState) {
+        for ((location, squareState) in boardState) {
+            map[location]?.state = squareState
+        }
+    }
 }
+
+typealias BoardState = Map<Pair<Int, Int>, State>
 
 /**
  * A single space on the [Board].
