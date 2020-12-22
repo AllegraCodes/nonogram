@@ -26,6 +26,19 @@ class ModelTest {
     @Nested
     inner class BoardTests {
         @Test
+        fun `test toString`() {
+            val board = Board(3, 3)
+            board[0, 0] = State.FILLED
+            board[1, 1] = State.EMPTY
+            board[2, 2] = State.FILLED
+            val answer = StringBuilder()
+            answer.appendLine("X__")
+            answer.appendLine("_O_")
+            answer.appendLine("__X")
+            assertEquals(answer.toString(), board.toString())
+        }
+
+        @Test
         fun `test Board State`() {
             val board = Board(1, 1)
             assertEquals(State.UNKNOWN, board[Pair(0, 0)]!!.state)

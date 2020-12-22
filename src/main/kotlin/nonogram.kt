@@ -1,3 +1,4 @@
+import java.lang.StringBuilder
 import kotlin.properties.Delegates
 
 /**
@@ -215,6 +216,26 @@ class Board(val numCols: Int, val numRows: Int) {
         for ((location, squareState) in boardState) {
             map[location]?.state = squareState
         }
+    }
+
+    /**
+     * Represent the board state with _ for UNKNOWN,
+     * O for EMPTY, and X for FILLED.
+     * */
+    override fun toString(): String {
+        val wholeString = StringBuilder()
+        for (row in 0 until numRows) {
+            val lineString = StringBuilder()
+            for (col in 0 until numCols) {
+                when (this[col, row]?.state) {
+                    State.UNKNOWN -> lineString.append('_')
+                    State.EMPTY -> lineString.append('O')
+                    State.FILLED -> lineString.append('X')
+                }
+            }
+            wholeString.appendLine(lineString)
+        }
+        return wholeString.toString()
     }
 }
 
