@@ -147,15 +147,16 @@ class Hint(val values: List<Int>) : Comparable<Hint> {
 }
 
 /**
- * The Board is a map of locations as Pair(column, row) to [Square].
+ * The Board is a map of [Location] to [Square].
  * Access the map with the indexed access operator (square brackets).
  * @property numCols the number of columns in the board
  * @property numRows the number of rows in the board
+ * @property map the map representing the board
  * @constructor creates a blank ([State].UNKNOWN) board of the given size
  */
 class Board(val numCols: Int, val numRows: Int) {
     val map by lazy {
-        val mMap = mutableMapOf<Pair<Int, Int>, Square>()
+        val mMap = mutableMapOf<Location, Square>()
         for (c in 0 until numCols) {
             for (r in 0 until numRows) {
                 mMap[Pair(c, r)] = Square()
@@ -170,8 +171,8 @@ class Board(val numCols: Int, val numRows: Int) {
         return false
     }
 
-    /** Change the [State] of a [Square] given its location as a Pair. */
-    operator fun set(location: Pair<Int, Int>, newState: State) {
+    /** Change the [State] of a [Square] given its [Location]. */
+    operator fun set(location: Location, newState: State) {
         map[location]?.state = newState
     }
 
@@ -180,8 +181,8 @@ class Board(val numCols: Int, val numRows: Int) {
         map[Pair(column, row)]?.state = newState
     }
 
-    /** Access the [Square]s with a location Pair. */
-    operator fun get(location: Pair<Int, Int>): Square? {
+    /** Access the [Square]s with a [Location]. */
+    operator fun get(location: Location): Square? {
         return map[location]
     }
 
@@ -209,6 +210,7 @@ class Board(val numCols: Int, val numRows: Int) {
         return true
     }
 
+    /** Applies the given [State]s to the board's [Square]s */
     fun applyState(boardState: BoardState) {
         for ((location, squareState) in boardState) {
             map[location]?.state = squareState
@@ -216,7 +218,11 @@ class Board(val numCols: Int, val numRows: Int) {
     }
 }
 
-typealias BoardState = Map<Pair<Int, Int>, State>
+/** A full or partial representation of a possible [Board] */
+typealias BoardState = Map<Location, State>
+
+/** A space on the [Board] (column, row) */
+typealias Location = Pair<Int, Int>
 
 /**
  * A single space on the [Board].
