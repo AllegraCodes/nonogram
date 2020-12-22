@@ -127,11 +127,18 @@ data class Block(val startIndex: Int, val size: Int)
 /**
  * A Hint is a list of integers representing the block sizes in the column/row.
  * Access the list with the indexed access operator (square brackets).
+ * Note that the empty hint should be represented with an empty list.
  * @property values the list of block sizes
  * @property size minimum size of the blocks and spaces
  */
 class Hint(val values: List<Int>) : Comparable<Hint> {
     val size = values.size - 1 + values.sum()
+
+    init {
+        if (values.minOrNull() ?: 1 < 1) {
+            throw IllegalArgumentException("Hint values must be > 0")
+        }
+    }
 
     /**
      * The [Hint]'s size is used for comparison.
@@ -164,6 +171,12 @@ class Board(val numCols: Int, val numRows: Int) {
             }
         }
         mMap.toMap()
+    }
+
+    init {
+        if (numCols <= 0 || numRows <= 0) {
+            throw IllegalArgumentException("Board must have numCols and numRows > 0")
+        }
     }
 
     /** Checks if the [Board] contains a [Square] with the given [State]. */
