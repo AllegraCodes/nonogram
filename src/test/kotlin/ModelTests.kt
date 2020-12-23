@@ -26,6 +26,32 @@ class ModelTest {
     @Nested
     inner class BoardTests {
         @Test
+        fun `extract board state`() {
+            val board = Board(3, 3)
+            board[0, 0] = State.FILLED
+            board[1, 1] = State.EMPTY
+            board[2, 2] = State.FILLED
+            val answer = mutableMapOf(
+                Pair(Pair(0, 0), State.FILLED),
+                Pair(Pair(1, 1), State.EMPTY),
+                Pair(Pair(2, 2), State.FILLED)
+            )
+            for ((location, _) in board.map) {
+                if (!answer.containsKey(location)) {
+                    answer[location] = State.UNKNOWN
+                }
+            }
+            assertEquals(answer, board.getBoardState())
+        }
+
+        @Test
+        fun `illegal arguments`() {
+            assertThrows<IllegalArgumentException> { Board(0, 0) }
+            assertThrows<IllegalArgumentException> { Board(0, 1) }
+            assertThrows<IllegalArgumentException> { Board(1, 0) }
+        }
+
+        @Test
         fun `test toString`() {
             val board = Board(3, 3)
             board[0, 0] = State.FILLED
@@ -101,6 +127,13 @@ class ModelTest {
         private val hint3 = Hint(listOf(1, 2, 3))
 
         @Test
+        fun `illegal arguments`() {
+            assertThrows<IllegalArgumentException> { Hint(listOf(0)) }
+            assertThrows<IllegalArgumentException> { Hint(listOf(1, 0)) }
+            assertThrows<IllegalArgumentException> { Hint(listOf(1, -1)) }
+        }
+
+        @Test
         fun `test constructor`() {
             assertEquals(5, hint1[1])
             assertEquals(9, hint2.size)
@@ -133,6 +166,15 @@ class ModelTest {
         private val board1 = Board(4, 3)
         private val hint1 = Hint(listOf(1, 2))
         private val line1 = Line(hint1, listOf(board1[0, 0]!!, board1[0, 1]!!, board1[0, 2]!!))
+
+        @Test
+        fun `big hint`() {
+            val board2 = Board(1, 3)
+            val hint2 = Hint(listOf(2))
+            val line2 = Line(hint2, listOf(board2[0, 0]!!, board2[0, 1]!!, board2[0, 2]!!))
+            line2.bigHint()
+            assertEquals(State.FILLED, board2[0, 1]!!.state)
+        }
 
         @Test
         fun `test indexed access`() {

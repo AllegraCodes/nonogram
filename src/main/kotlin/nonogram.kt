@@ -34,7 +34,7 @@ class Puzzle(
             }
             mLines.add(Line(hint, squares.toList()))
         }
-        mLines.sortedByDescending { it.hint }
+        mLines.toList()
     }
 
     /** Checks if the current [Board] solves the puzzle */
@@ -84,6 +84,36 @@ class Line(val hint: Hint, val squares: List<Square>) : SquareObserver {
         }
         if (blockSize > 0) mBlocks.add(Block(blockStart, blockSize))
         blocks = mBlocks.toList()
+    }
+
+    /**
+     * Applies the big hint rule by building a list of
+     * which block each square is part of in a front
+     * aligned and back aligned configuration. Squares
+     * that are part of the same block in both configurations
+     * are set to FILLED.
+     */
+    fun bigHint() {
+        val core = mutableListOf<Int>()
+        for ((index, block) in hint.values.withIndex()) {
+            for (i in 0 until block) {
+                core.add(index + 1)
+            }
+            if (index < hint.values.size - 1) core.add(0)
+        }
+        val pad = mutableListOf<Int>()
+        for (i in core.size until squares.size) {
+            pad.add(0)
+        }
+        val front = core + pad
+        val back = pad + core
+        for (index in front.indices) {
+            if (front[index] != 0 &&
+                front[index] == back[index]
+            ) {
+                squares[index].state = State.FILLED
+            }
+        }
     }
 
     /** Gets the current sizes of blocks in the line */
@@ -229,6 +259,15 @@ class Board(val numCols: Int, val numRows: Int) {
         for ((location, squareState) in boardState) {
             map[location]?.state = squareState
         }
+    }
+
+    /** Gets the current [BoardState] of the board */
+    fun getBoardState(): BoardState {
+        val mMap = mutableMapOf<Location, State>()
+        for ((location, square) in map) {
+            mMap[location] = square.state
+        }
+        return mMap.toMap()
     }
 
     /**
