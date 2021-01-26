@@ -66,15 +66,15 @@ class Line(val hint: Hint, val squares: List<Square>) : SquareObserver {
         var blockSize = 0
         var blockStart = 0
         val mBlocks = mutableListOf<Block>()
-        var lastState = State.EMPTY
+        var lastState = Square.State.EMPTY
         for ((index, square) in squares.withIndex()) {
-            if (lastState != State.FILLED) { // looking for block
-                if (square.state == State.FILLED) {
+            if (lastState != Square.State.FILLED) { // looking for block
+                if (square.state == Square.State.FILLED) {
                     blockSize = 1
                     blockStart = index
                 }
             } else { // building a block
-                if (square.state == State.FILLED) blockSize++
+                if (square.state == Square.State.FILLED) blockSize++
                 else {
                     mBlocks.add(Block(blockStart, blockSize))
                     blockSize = 0
@@ -111,7 +111,7 @@ class Line(val hint: Hint, val squares: List<Square>) : SquareObserver {
             if (front[index] != 0 &&
                 front[index] == back[index]
             ) {
-                squares[index].state = State.FILLED
+                squares[index].state = Square.State.FILLED
             }
         }
     }
@@ -131,13 +131,13 @@ class Line(val hint: Hint, val squares: List<Square>) : SquareObserver {
     }
 
     /** Checks if the [Line] contains a [Square] with the given [State]. */
-    fun contains(state: State): Boolean {
+    fun contains(state: Square.State): Boolean {
         for (square in squares) if (square.state == state) return true
         return false
     }
 
-    /** Set the [State] of a [Square] in this [Line] by index. */
-    operator fun set(index: Int, newState: State) {
+    /** Set the [Square.State] of a [Square] in this [Line] by index. */
+    operator fun set(index: Int, newState: Square.State) {
         squares[index].state = newState
     }
 
@@ -190,7 +190,7 @@ class Hint(val values: List<Int>) : Comparable<Hint> {
  * @property numCols the number of columns in the board
  * @property numRows the number of rows in the board
  * @property map the map representing the board
- * @constructor creates a blank ([State].UNKNOWN) board of the given size
+ * @constructor creates a blank ([Square.State].UNKNOWN) board of the given size
  */
 class Board(val numCols: Int, val numRows: Int) {
     val map by lazy {
@@ -210,18 +210,18 @@ class Board(val numCols: Int, val numRows: Int) {
     }
 
     /** Checks if the [Board] contains a [Square] with the given [State]. */
-    fun contains(state: State): Boolean {
+    fun contains(state: Square.State): Boolean {
         for ((_, square) in map) if (square.state == state) return true
         return false
     }
 
-    /** Change the [State] of a [Square] given its [Location]. */
-    operator fun set(location: Location, newState: State) {
+    /** Change the [Square.State] of a [Square] given its [Location]. */
+    operator fun set(location: Location, newState: Square.State) {
         map[location]?.state = newState
     }
 
-    /** Change the [State] of a [Square] given its column and row. */
-    operator fun set(column: Int, row: Int, newState: State) {
+    /** Change the [Square.State] of a [Square] given its column and row. */
+    operator fun set(column: Int, row: Int, newState: Square.State) {
         map[Pair(column, row)]?.state = newState
     }
 
@@ -236,9 +236,9 @@ class Board(val numCols: Int, val numRows: Int) {
     }
 
     /**
-     * Does a deep comparison by the [State]s of each [Board]'s [Square]s.
+     * Does a deep comparison by the [Square.State]s of each [Board]'s [Square]s.
      * @return true if the corresponding [Square]s on each [Board]
-     * have the same [State], false otherwise
+     * have the same [Square.State], false otherwise
      */
     fun sameStates(other: Board): Boolean {
         if (other.numCols != this.numCols ||
@@ -254,7 +254,7 @@ class Board(val numCols: Int, val numRows: Int) {
         return true
     }
 
-    /** Applies the given [State]s to the board's [Square]s */
+    /** Applies the given [Square.State]s to the board's [Square]s */
     fun applyState(boardState: BoardState) {
         for ((location, squareState) in boardState) {
             map[location]?.state = squareState
@@ -263,7 +263,7 @@ class Board(val numCols: Int, val numRows: Int) {
 
     /** Gets the current [BoardState] of the board */
     fun getBoardState(): BoardState {
-        val mMap = mutableMapOf<Location, State>()
+        val mMap = mutableMapOf<Location, Square.State>()
         for ((location, square) in map) {
             mMap[location] = square.state
         }
@@ -280,9 +280,9 @@ class Board(val numCols: Int, val numRows: Int) {
             val lineString = StringBuilder()
             for (col in 0 until numCols) {
                 when (this[col, row]?.state) {
-                    State.UNKNOWN -> lineString.append('_')
-                    State.EMPTY -> lineString.append('O')
-                    State.FILLED -> lineString.append('X')
+                    Square.State.UNKNOWN -> lineString.append('_')
+                    Square.State.EMPTY -> lineString.append('O')
+                    Square.State.FILLED -> lineString.append('X')
                 }
             }
             wholeString.appendLine(lineString)
@@ -292,7 +292,7 @@ class Board(val numCols: Int, val numRows: Int) {
 }
 
 /** A full or partial representation of a possible [Board] */
-typealias BoardState = Map<Location, State>
+typealias BoardState = Map<Location, Square.State>
 
 /** A space on the [Board] (column, row) */
 typealias Location = Pair<Int, Int>
@@ -307,6 +307,11 @@ class Square {
     var state by Delegates.observable(State.UNKNOWN) { _, _, _ ->
         observers.forEach { it.update() }
     }
+
+    /** The possible states of a [Square] on the [Board]: UNKNOWN, EMPTY, FILLED */
+    enum class State {
+        UNKNOWN, EMPTY, FILLED
+    }
 }
 
 /**
@@ -315,9 +320,4 @@ class Square {
  */
 interface SquareObserver {
     fun update()
-}
-
-/** The possible states of a [Square] on the [Board]: UNKNOWN, EMPTY, FILLED */
-enum class State {
-    UNKNOWN, EMPTY, FILLED
 }

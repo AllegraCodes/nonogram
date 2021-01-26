@@ -11,15 +11,15 @@ class ModelTest {
 
         @Test
         fun `initialized to UNKNOWN`() {
-            assertEquals(State.UNKNOWN, square1.state)
+            assertEquals(Square.State.UNKNOWN, square1.state)
         }
 
         @Test
         fun `change state`() {
-            square1.state = State.EMPTY
-            assertEquals(State.EMPTY, square1.state)
-            square1.state = State.FILLED
-            assertEquals(State.FILLED, square1.state)
+            square1.state = Square.State.EMPTY
+            assertEquals(Square.State.EMPTY, square1.state)
+            square1.state = Square.State.FILLED
+            assertEquals(Square.State.FILLED, square1.state)
         }
     }
 
@@ -28,17 +28,17 @@ class ModelTest {
         @Test
         fun `extract board state`() {
             val board = Board(3, 3)
-            board[0, 0] = State.FILLED
-            board[1, 1] = State.EMPTY
-            board[2, 2] = State.FILLED
+            board[0, 0] = Square.State.FILLED
+            board[1, 1] = Square.State.EMPTY
+            board[2, 2] = Square.State.FILLED
             val answer = mutableMapOf(
-                Pair(Pair(0, 0), State.FILLED),
-                Pair(Pair(1, 1), State.EMPTY),
-                Pair(Pair(2, 2), State.FILLED)
+                Pair(Pair(0, 0), Square.State.FILLED),
+                Pair(Pair(1, 1), Square.State.EMPTY),
+                Pair(Pair(2, 2), Square.State.FILLED)
             )
             for ((location, _) in board.map) {
                 if (!answer.containsKey(location)) {
-                    answer[location] = State.UNKNOWN
+                    answer[location] = Square.State.UNKNOWN
                 }
             }
             assertEquals(answer, board.getBoardState())
@@ -54,9 +54,9 @@ class ModelTest {
         @Test
         fun `test toString`() {
             val board = Board(3, 3)
-            board[0, 0] = State.FILLED
-            board[1, 1] = State.EMPTY
-            board[2, 2] = State.FILLED
+            board[0, 0] = Square.State.FILLED
+            board[1, 1] = Square.State.EMPTY
+            board[2, 2] = Square.State.FILLED
             val answer = StringBuilder()
             answer.appendLine("X__")
             answer.appendLine("_O_")
@@ -67,11 +67,11 @@ class ModelTest {
         @Test
         fun `test Board State`() {
             val board = Board(1, 1)
-            assertEquals(State.UNKNOWN, board[Pair(0, 0)]!!.state)
-            board[Pair(0, 0)] = State.EMPTY
-            assertEquals(State.EMPTY, board[0, 0]!!.state)
-            board[0, 0] = State.FILLED
-            assertEquals(State.FILLED, board[0, 0]!!.state)
+            assertEquals(Square.State.UNKNOWN, board[Pair(0, 0)]!!.state)
+            board[Pair(0, 0)] = Square.State.EMPTY
+            assertEquals(Square.State.EMPTY, board[0, 0]!!.state)
+            board[0, 0] = Square.State.FILLED
+            assertEquals(Square.State.FILLED, board[0, 0]!!.state)
         }
 
         @Test
@@ -79,42 +79,42 @@ class ModelTest {
             val board1 = Board(3, 3)
             val board2 = Board(3, 3)
             val board3 = Board(3, 4)
-            board1[0, 0] = State.EMPTY
-            board1[1, 1] = State.FILLED
-            board2[0, 0] = State.EMPTY
-            board2[1, 1] = State.FILLED
-            board3[0, 0] = State.EMPTY
-            board3[1, 1] = State.FILLED
+            board1[0, 0] = Square.State.EMPTY
+            board1[1, 1] = Square.State.FILLED
+            board2[0, 0] = Square.State.EMPTY
+            board2[1, 1] = Square.State.FILLED
+            board3[0, 0] = Square.State.EMPTY
+            board3[1, 1] = Square.State.FILLED
             assertTrue(board1.sameStates(board2))
             assertTrue(board2.sameStates(board1))
             assertFalse(board2.sameStates(board3))
             assertFalse(board3.sameStates(board2))
-            board1[2, 2] = State.FILLED
+            board1[2, 2] = Square.State.FILLED
             assertFalse(board1.sameStates(board2))
         }
 
         @Test
         fun `test contains`() {
             val board1 = Board(3, 3)
-            assertTrue(board1.contains(State.UNKNOWN))
-            assertFalse(board1.contains(State.FILLED))
-            assertFalse(board1.contains(State.EMPTY))
-            board1[0, 0] = State.EMPTY
-            board1[2, 2] = State.FILLED
-            assertTrue(board1.contains(State.FILLED))
-            assertTrue(board1.contains(State.EMPTY))
+            assertTrue(board1.contains(Square.State.UNKNOWN))
+            assertFalse(board1.contains(Square.State.FILLED))
+            assertFalse(board1.contains(Square.State.EMPTY))
+            board1[0, 0] = Square.State.EMPTY
+            board1[2, 2] = Square.State.FILLED
+            assertTrue(board1.contains(Square.State.FILLED))
+            assertTrue(board1.contains(Square.State.EMPTY))
         }
 
         @Test
         fun `apply state`() {
             val board = Board(3, 3)
-            val boardState = mapOf(Pair(Pair(1, 2), State.FILLED))
+            val boardState = mapOf(Pair(Pair(1, 2), Square.State.FILLED))
             board.applyState(boardState)
             for ((location, square) in board.map) {
                 if (location == Pair(1, 2)) {
-                    assertEquals(State.FILLED, square.state)
+                    assertEquals(Square.State.FILLED, square.state)
                 } else {
-                    assertEquals(State.UNKNOWN, square.state)
+                    assertEquals(Square.State.UNKNOWN, square.state)
                 }
             }
         }
@@ -154,9 +154,9 @@ class ModelTest {
 
         @Test
         fun `test constructor`() {
-            line1[0] = State.FILLED
-            line1[1] = State.FILLED
-            line1[2] = State.FILLED
+            line1[0] = Square.State.FILLED
+            line1[1] = Square.State.FILLED
+            line1[2] = Square.State.FILLED
             assertDoesNotThrow { Block(0, 3) }
         }
     }
@@ -173,13 +173,13 @@ class ModelTest {
             val hint2 = Hint(listOf(2))
             val line2 = Line(hint2, listOf(board2[0, 0]!!, board2[0, 1]!!, board2[0, 2]!!))
             line2.bigHint()
-            assertEquals(State.FILLED, board2[0, 1]!!.state)
+            assertEquals(Square.State.FILLED, board2[0, 1]!!.state)
         }
 
         @Test
         fun `test indexed access`() {
-            line1[1] = State.EMPTY
-            assertEquals(State.EMPTY, line1[1].state)
+            line1[1] = Square.State.EMPTY
+            assertEquals(Square.State.EMPTY, line1[1].state)
         }
 
         @Test
@@ -189,24 +189,24 @@ class ModelTest {
 
         @Test
         fun `test contains`() {
-            assertFalse(line1.contains(State.FILLED))
-            line1.squares[2].state = State.FILLED
-            assertTrue(line1.contains(State.FILLED))
+            assertFalse(line1.contains(Square.State.FILLED))
+            line1.squares[2].state = Square.State.FILLED
+            assertTrue(line1.contains(Square.State.FILLED))
         }
 
         @Test
         fun `test block starts`() {
-            line1[0] = State.FILLED
-            line1[1] = State.EMPTY
-            line1[2] = State.FILLED
+            line1[0] = Square.State.FILLED
+            line1[1] = Square.State.EMPTY
+            line1[2] = Square.State.FILLED
             assertEquals(listOf(0, 2), line1.getBlockStarts())
         }
 
         @Test
         fun `test getBlocks`() {
-            line1[0] = State.FILLED
-            line1[1] = State.EMPTY
-            line1[2] = State.FILLED
+            line1[0] = Square.State.FILLED
+            line1[1] = Square.State.EMPTY
+            line1[2] = Square.State.FILLED
             val blocks = line1.blocks
             assertEquals(2, blocks.size)
             assertEquals(0, blocks[0].startIndex)
@@ -232,36 +232,36 @@ class ModelTest {
             val hintRow5 = Hint(listOf(4))
             val rowHints = listOf(hintRow1, hintRow2, hintRow3, hintRow4, hintRow5)
             val puzzle = Puzzle(colHints, rowHints)
-            puzzle.board[0, 0] = State.FILLED
-            puzzle.board[0, 1] = State.EMPTY
-            puzzle.board[0, 2] = State.EMPTY
-            puzzle.board[0, 3] = State.EMPTY
-            puzzle.board[0, 4] = State.EMPTY
-            puzzle.board[1, 0] = State.FILLED
-            puzzle.board[1, 1] = State.FILLED
-            puzzle.board[1, 2] = State.FILLED
-            puzzle.board[1, 3] = State.FILLED
-            puzzle.board[1, 4] = State.FILLED
-            puzzle.board[2, 0] = State.EMPTY
-            puzzle.board[2, 1] = State.EMPTY
-            puzzle.board[2, 2] = State.EMPTY
-            puzzle.board[2, 3] = State.FILLED
-            puzzle.board[2, 4] = State.FILLED
-            puzzle.board[3, 0] = State.EMPTY
-            puzzle.board[3, 1] = State.FILLED
-            puzzle.board[3, 2] = State.FILLED
-            puzzle.board[3, 3] = State.FILLED
-            puzzle.board[3, 4] = State.FILLED
-            puzzle.board[4, 0] = State.EMPTY
-            puzzle.board[4, 1] = State.FILLED
-            puzzle.board[4, 2] = State.FILLED
-            puzzle.board[4, 3] = State.EMPTY
-            puzzle.board[4, 4] = State.FILLED
-            puzzle.board[5, 0] = State.FILLED
-            puzzle.board[5, 1] = State.FILLED
-            puzzle.board[5, 2] = State.EMPTY
-            puzzle.board[5, 3] = State.EMPTY
-            puzzle.board[5, 4] = State.EMPTY
+            puzzle.board[0, 0] = Square.State.FILLED
+            puzzle.board[0, 1] = Square.State.EMPTY
+            puzzle.board[0, 2] = Square.State.EMPTY
+            puzzle.board[0, 3] = Square.State.EMPTY
+            puzzle.board[0, 4] = Square.State.EMPTY
+            puzzle.board[1, 0] = Square.State.FILLED
+            puzzle.board[1, 1] = Square.State.FILLED
+            puzzle.board[1, 2] = Square.State.FILLED
+            puzzle.board[1, 3] = Square.State.FILLED
+            puzzle.board[1, 4] = Square.State.FILLED
+            puzzle.board[2, 0] = Square.State.EMPTY
+            puzzle.board[2, 1] = Square.State.EMPTY
+            puzzle.board[2, 2] = Square.State.EMPTY
+            puzzle.board[2, 3] = Square.State.FILLED
+            puzzle.board[2, 4] = Square.State.FILLED
+            puzzle.board[3, 0] = Square.State.EMPTY
+            puzzle.board[3, 1] = Square.State.FILLED
+            puzzle.board[3, 2] = Square.State.FILLED
+            puzzle.board[3, 3] = Square.State.FILLED
+            puzzle.board[3, 4] = Square.State.FILLED
+            puzzle.board[4, 0] = Square.State.EMPTY
+            puzzle.board[4, 1] = Square.State.FILLED
+            puzzle.board[4, 2] = Square.State.FILLED
+            puzzle.board[4, 3] = Square.State.EMPTY
+            puzzle.board[4, 4] = Square.State.FILLED
+            puzzle.board[5, 0] = Square.State.FILLED
+            puzzle.board[5, 1] = Square.State.FILLED
+            puzzle.board[5, 2] = Square.State.EMPTY
+            puzzle.board[5, 3] = Square.State.EMPTY
+            puzzle.board[5, 4] = Square.State.EMPTY
             puzzle
         }
 
@@ -283,11 +283,11 @@ class ModelTest {
             assertTrue(testPuzzle.isSolved())
             for (col in 0 until testPuzzle.numCols) {
                 for (row in 0 until testPuzzle.numRows) {
-                    testPuzzle.board[col, row] = State.FILLED
+                    testPuzzle.board[col, row] = Square.State.FILLED
                 }
             }
             assertFalse(testPuzzle.isSolved())
-            testPuzzle.board[0, 0] = State.UNKNOWN
+            testPuzzle.board[0, 0] = Square.State.UNKNOWN
             assertFalse(testPuzzle.isSolved())
         }
     }
