@@ -1,0 +1,34 @@
+AS A
+player
+I WANT TO
+fill in the board with filled, empty, and unknown
+BECAUSE
+that is how to solve the puzzle
+
+AS A
+player
+I WANT TO
+see when the board contains an error
+BECAUSE
+it will help me solve the puzzle
+
+AS A
+developer
+I WANT TO
+build a nonogram-playing app
+BECAUSE
+customers will enjoy it
+
+AS A
+developer
+I WANT TO
+offer hints
+BECAUSE
+it will help customers play the game
+
+AS A
+programmer
+I WANT TO
+solve the entire puzzle
+BECAUSE
+i'm interested in nonogram solvers

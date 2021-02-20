@@ -130,7 +130,7 @@ class Line(val hint: Hint, val squares: List<Square>) : SquareObserver {
         return starts.toList()
     }
 
-    /** Checks if the [Line] contains a [Square] with the given [State]. */
+    /** Checks if the [Line] contains a [Square] with the given [Square.State]. */
     fun contains(state: Square.State): Boolean {
         for (square in squares) if (square.state == state) return true
         return false
@@ -209,7 +209,7 @@ class Board(val numCols: Int, val numRows: Int) {
         }
     }
 
-    /** Checks if the [Board] contains a [Square] with the given [State]. */
+    /** Checks if the [Board] contains a [Square] with the given [Square.State]. */
     fun contains(state: Square.State): Boolean {
         for ((_, square) in map) if (square.state == state) return true
         return false
@@ -315,7 +315,7 @@ class Square {
 }
 
 /**
- * Classes that want to update when a [Square]'s [State] changes
+ * Classes that want to update when a [Square]'s [Square.State] changes
  * can implement this interface and register with the [Square]s.
  */
 interface SquareObserver {
